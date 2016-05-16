@@ -12,6 +12,7 @@ import (
 	"os"
 	"io"
 	"bytes"
+	"github.com/gamexg/TcpRoute2/daemon"
 )
 
 const version = "0.5.8"
@@ -28,7 +29,12 @@ type ServerConfig struct {
 func main() {
 	printVer := flag.Bool("version", false, "print version")
 	config_path_flag := flag.String("config", "config.toml", "配置文件路径")
+	_daemon := flag.Bool("daemon", false, "daemon")
 	flag.Parse()
+
+	if *_daemon{
+		Daemon.MakeDaemon()
+	}
 
 	fmt.Println("TcpRoute2 version", version)
 	if *printVer {
