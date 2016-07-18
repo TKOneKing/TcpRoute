@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"io/ioutil"
 )
 
 /*
@@ -145,7 +146,9 @@ func (u*UFile)down(f*uFile) (rerr error) {
 			rerr = err
 			res.Err = err
 		} else if r.StatusCode != 200 {
-			rerr = fmt.Errorf("下载(%v)失败，服务器返回(%v)：%v", r.StatusCode, r.Status)
+			body,err:=ioutil.ReadAll(r.Body)
+			r.Body.Close()
+			rerr = fmt.Errorf("下载(%v)失败，服务器返回(%v)：%v,%v", r.StatusCode, r.Status,string(body),err)
 			res.Err = rerr
 		} else {
 			res.Rc = r.Body
