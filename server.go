@@ -5,6 +5,7 @@ import (
 	"net"
 	"io"
 	"log"
+	"github.com/gamexg/TcpRoute2/nettool"
 )
 
 //
@@ -108,11 +109,8 @@ func (srv *Server) handlerConn(conn net.Conn) {
 	}()
 	// 是这里调用关闭还是 Handler() 负责？
 	defer conn.Close()
+	nettool.SetLinger(conn,5)
 
-	if tcpConn, ok := conn.(SetLingerer); ok == true {
-		// 设置关闭连接时最多等待多少秒
-		tcpConn.SetLinger(5)
-	}
 	conn.SetDeadline(time.Now().Add(handlerNewTimeout))
 
 	h, _, err := srv.hNewer.New(conn)

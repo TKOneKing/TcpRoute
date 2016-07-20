@@ -10,6 +10,7 @@ import (
 	"strconv"
 	"log"
 	"sync/atomic"
+	"github.com/gamexg/TcpRoute2/nettool"
 )
 
 const forwardBufSize = 8192 // 转发缓冲区大小
@@ -186,6 +187,7 @@ func (h*hSocksHandle)handleSocks5() error {
 		return fmt.Errorf("无法连接目标网站( %v )，详细错误：%v", rAddr, err)
 	}
 	defer oConn.Close()
+	nettool.SetLinger(oConn,5)
 
 	// 如果进行了预处理就不用在发出已经建立连接的回应了，预处理时已经发出了。
 	if preProtocol == preProtocolUnknown {
