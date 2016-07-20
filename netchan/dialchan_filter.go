@@ -77,7 +77,7 @@ func (d*dialFilter)DialFilter(network, host, ip string, port int, dialCredit, ip
 	if credit >= v {
 		return true
 	} else {
-		log.Println("%v %v(%v):%v dialCreadit=%v ipCredit=%v 信任度低，拒绝访问。", network, host, ip, port, dialCredit, ipCredit)
+		log.Printf("%v %v(%v):%v dialCreadit=%v ipCredit=%v 信任度低，拒绝访问。", network, host, ip, port, dialCredit, ipCredit)
 		return false
 	}
 }

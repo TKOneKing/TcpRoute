@@ -104,7 +104,7 @@ func (srv *Server) Server() error {
 func (srv *Server) handlerConn(conn net.Conn) {
 	defer func() {
 		if err := recover(); err != nil {
-			log.Printf("work failed:", err)
+			log.Printf("work failed:%v", err)
 		}
 	}()
 	// 是这里调用关闭还是 Handler() 负责？
@@ -122,7 +122,7 @@ func (srv *Server) handlerConn(conn net.Conn) {
 	conn.SetDeadline(time.Now().Add(handlerBaseTimeout))
 	if err := h.Handle(); err != nil {
 		if err != io.EOF {
-			log.Printf("协议处理错误：", err)
+			log.Printf("协议处理错误：%v", err)
 		}
 	}
 }

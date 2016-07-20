@@ -82,7 +82,7 @@ func ChanDialTimeout(dial DialTimeouter, dialCredit int, connChan chan ConnRes, 
 	}
 	portInt, err := strconv.Atoi(prot)
 	if err != nil || portInt < 0 {
-		return fmt.Errorf("端口错误：", portInt)
+		return fmt.Errorf("端口错误：%v", portInt)
 	}
 	ip := net.ParseIP(host)
 

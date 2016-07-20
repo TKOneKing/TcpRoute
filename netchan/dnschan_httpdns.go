@@ -34,7 +34,7 @@ func NewHttpDns(u string) (*httpDNS, error) {
 	hd.surl = u
 	_url, err := url.Parse(u)
 	if err != nil {
-		return nil, fmt.Errorf("url 解析错误：", err)
+		return nil, fmt.Errorf("url 解析错误：%v", err)
 	}
 	hd.url = *_url
 	hd.url_query = _url.Query()
@@ -62,7 +62,7 @@ func (hd*httpDNS)query(domain string, RecordChan chan *DnsRecord, ExitChan chan 
 
 	resp, err := http.Get(newUrl.String())
 	if err != nil {
-		log.Printf("httpDns query %v err:", domain, err)
+		log.Printf("httpDns query %v err:%v", domain, err)
 		return
 	}
 
@@ -73,7 +73,7 @@ func (hd*httpDNS)query(domain string, RecordChan chan *DnsRecord, ExitChan chan 
 	dec := json.NewDecoder(resp.Body)
 
 	if err := dec.Decode(&dnsRes); err != nil {
-		log.Printf("httpDns query %v err:", domain, err)
+		log.Printf("httpDns query %v err:%v", domain, err)
 		return
 	}
 

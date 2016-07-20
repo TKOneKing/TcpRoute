@@ -131,13 +131,13 @@ func (h*hSocksHandle)handleSocks5() error {
 		b[0] = domainSize
 
 		if _, err := io.ReadFull(conn, b[1:]); err != nil {
-			return fmt.Errorf("读地址错误：%v", )
+			return fmt.Errorf("读地址错误：%v", err)
 		}
 		host = net.IP(b).String()
 	} else if atyp == 0x03 {
 		b = b[:domainSize]
 		if _, err := io.ReadFull(conn, b); err != nil {
-			return fmt.Errorf("读地址错误：%v", )
+			return fmt.Errorf("读地址错误：%v",err )
 		}
 		host = string(b)
 	}else {
