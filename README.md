@@ -209,6 +209,7 @@ addr="127.0.0.1:7070"
 # 指定域名文件的匹配类型
 # base 完整匹配，默认值。即 www.abc.com 只匹配 www.abc.com ，不匹配 aaa.www.abc.com 。
 # suffix 后缀匹配。即 abc.com 匹配 abc.com、www.abc.com、aaa.www.abc.com，不匹配 aaaabc.com。
+#     注意，想匹配 *.cn 的域名请直接使用 cn ，而不要使用 .cn ，程序内部会自动增加"."。
 # pan 泛解析匹配。即 *.abc.com 匹配 www.abc.com 、aaa.www.abc.com。不匹配 .abc.com。?.abc.com 匹配 a.abc.com。
 # regex 正则匹配。即 ^.+?.com$ 匹配 www.abc.com 、aaa.www.abc.com。注意：完整匹配时不要忘记 ^$ 。
 # 默认值："base"
