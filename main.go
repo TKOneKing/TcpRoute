@@ -6,13 +6,13 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	"github.com/gamexg/TcpRoute2/netchan"
+	"./netchan"
 	"path/filepath"
 	"github.com/BurntSushi/toml"
 	"os"
 	"io"
 	"bytes"
-	"github.com/gamexg/TcpRoute2/daemon"
+	"./daemon"
 )
 
 const version = "0.5.8"

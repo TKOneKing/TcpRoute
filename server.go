@@ -5,7 +5,7 @@ import (
 	"net"
 	"io"
 	"log"
-	"github.com/gamexg/TcpRoute2/nettool"
+	"./nettool"
 )
 
 //
