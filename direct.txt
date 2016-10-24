@@ -124,3 +124,6 @@ www.xiami.com
 www.yinyuetai.com
 xyy.video.qq.com
 zb.s.qq.com
+alicdn.com
+sina.com
+sina.com.cn
