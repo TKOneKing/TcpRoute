@@ -1,10 +1,11 @@
 package netchan
 
 import (
-	"net"
-	"github.com/miekg/dns"
-	"time"
 	"log"
+	"net"
+	"time"
+
+	"github.com/miekg/dns"
 )
 
 type dnsServer struct {
@@ -12,7 +13,7 @@ type dnsServer struct {
 }
 
 type ConfigDnsServer struct {
-	Addr string
+	Addr   string
 	Credit int
 }
 
@@ -20,28 +21,28 @@ type dnsDns struct {
 	servers map[net.UDPAddr]*dnsServer
 }
 
-func NewDnsDns()(*dnsDns){
+func NewDnsDns() *dnsDns {
 	return &dnsDns{
-		servers:make(map[net.UDPAddr]*dnsServer),
+		servers: make(map[net.UDPAddr]*dnsServer),
 	}
 }
 
-func(d*dnsDns)setServers(servers []ConfigDnsServer){
+func (d *dnsDns) setServers(servers []ConfigDnsServer) {
 
 }
 
-
-
-func (d*dnsDns)query(domain string, RecordChan chan *DnsRecord, ExitChan chan int) {
-	dnschanDnsQuery(d.servers,domain,RecordChan,ExitChan)
+func (d *dnsDns) query(domain string, RecordChan chan *DnsRecord, ExitChan chan int) {
+	dnschanDnsQuery(d.servers, domain, RecordChan, ExitChan)
 }
 
-func dnschanDnsQuery(servers map[net.UDPAddr]*dnsServer,domain string, RecordChan chan *DnsRecord, ExitChan chan int) {
+func dnschanDnsQuery(servers map[net.UDPAddr]*dnsServer, domain string, RecordChan chan *DnsRecord, ExitChan chan int) {
 	select {
 	case <-ExitChan:
 		return
 	default:
 	}
+	myexitChan := make(chan int)
+	defer func() { close(myexitChan) }()
 
 	// 打开端口
 	conn, err := net.ListenUDP("udp", nil)
@@ -70,6 +71,15 @@ func dnschanDnsQuery(servers map[net.UDPAddr]*dnsServer,domain string, RecordCha
 				log.Printf("向%v发送dns请求失败，%v", k, err)
 			}
 		}
+	}()
+
+	// 等待关闭
+	go func() {
+		select {
+		case <-ExitChan:
+		case <-myexitChan:
+		}
+		conn.Close()
 	}()
 
 	// 接收查询结果并输入到信道
@@ -103,11 +113,14 @@ func dnschanDnsQuery(servers map[net.UDPAddr]*dnsServer,domain string, RecordCha
 			if err != nil || dnsA == nil {
 				log.Printf("内部错误，a=%v,err=%v", dnsA, err)
 			}
-			RecordChan <- &DnsRecord{
-				Ip:dnsA.A.String(),
-				Credit:v.Credit,
+			select {
+			case RecordChan <- &DnsRecord{
+				Ip:     dnsA.A.String(),
+				Credit: v.Credit,
+			}:
+			case <-ExitChan:
+				return
 			}
 		}
 	}
 }
-

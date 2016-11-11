@@ -189,6 +189,7 @@ namespace TcpRoute2Windows
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
+            autoRestart = false;
             tcpRouteClose();
         }
 
