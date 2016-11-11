@@ -76,15 +76,36 @@ func searchBlackIP() {
 
 		for i := 0; i < 3; i++ {
 			recordChan := make(chan *DnsRecord)
-			exitChan := make(chan int, 10)
+			exitChan := make(chan int)
 
+			wg:=sync.WaitGroup{}
+
+			// 探测 DNS 纠错 IP
+			wg.Add(1)
 			go func() {
+				defer wg.Done()
 				for _, q := range queries {
 					domain := fmt.Sprint(time.Now().Unix(), "dshsdjhsdsgsevstyhndrdrntrtvsvstbruiuok095g.com")
 					q.query(domain, recordChan, exitChan)
 				}
-				close(recordChan)
 			}()
+
+			// 探测 DNS 劫持 IP
+			servers:=make(map[net.UDPAddr]*dnsServer)
+			addr,err:=net.ResolveUDPAddr("udp","8.8.6.3:53")
+			if err != nil {
+				panic(fmt.Sprintf("内部错误：%v",err))
+			}
+			servers[addr]=&dnsServer{0}
+
+			wg.Add(1)
+			go func() {
+				defer wg.Done()
+				dnschanDnsQuery(servers, "twitter.com", recordChan, exitChan)
+			}()
+
+			wg.Wait()
+			close(recordChan)
 
 			for r := range recordChan {
 				bIP[r.Ip] = true

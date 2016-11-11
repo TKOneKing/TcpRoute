@@ -30,3 +30,7 @@ windows/WindowsFormsApplication1/WindowsFormsApplication1/bin/
 windows/WindowsFormsApplication1/WindowsFormsApplication1/obj/Debug/WindowsFormsApplication1.csproj.FileListAbsolute.txt
 windows/WindowsFormsApplication1/WindowsFormsApplication1/obj/
 windows/WindowsFormsApplication1/.vs/
+Blacklist.txt
+README.txt
+TcpRoute2
+TcpRoute2-Windows-GUI.zip

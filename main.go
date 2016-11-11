@@ -2,20 +2,21 @@
 package main
 
 import (
-	"time"
+	"bytes"
 	"flag"
 	"fmt"
-	"log"
-	"./netchan"
-	"path/filepath"
-	"github.com/BurntSushi/toml"
-	"os"
 	"io"
-	"bytes"
-	"./daemon"
+	"log"
+	"os"
+	"path/filepath"
+	"time"
+
+	"github.com/BurntSushi/toml"
+	"github.com/gamexg/TcpRoute2/daemon"
+	"github.com/gamexg/TcpRoute2/netchan"
 )
 
-const version = "0.5.8"
+const version = "0.5.9"
 
 type ServerConfig struct {
 	Addr          string `default:"127.0.0.1:7070"`
@@ -25,14 +26,13 @@ type ServerConfig struct {
 	Hosts         []*netchan.DnschanHostsConfigHosts
 }
 
-
 func main() {
 	printVer := flag.Bool("version", false, "print version")
 	config_path_flag := flag.String("config", "config.toml", "配置文件路径")
 	_daemon := flag.Bool("daemon", false, "daemon")
 	flag.Parse()
 
-	if *_daemon{
+	if *_daemon {
 		Daemon.MakeDaemon()
 	}
 
@@ -94,12 +94,12 @@ func main() {
 
 	for _, v := range serverConfig.UpStreams {
 		if v.ProxyUrl == "" {
-			v.ProxyUrl="direct://0.0.0.0:0000"
+			v.ProxyUrl = "direct://0.0.0.0:0000"
 		}
 		if v.Name == "" {
 			v.Name = v.ProxyUrl
 		}
-		wbListFunc := func(list    []*ConfigDialClientWBList) error {
+		wbListFunc := func(list []*ConfigDialClientWBList) error {
 			for _, v := range list {
 				if v.Path == "" {
 					return fmt.Errorf("黑白名单 Path 不能为空")
@@ -121,11 +121,9 @@ func main() {
 		}
 	}
 
-
-
-	if err := netchan.HostsDns.Config(&netchan.DnschanHostsConfig{BashPath:config_dir,
-		Hostss:serverConfig.Hosts,
-		CheckInterval:1 * time.Minute,
+	if err := netchan.HostsDns.Config(&netchan.DnschanHostsConfig{BashPath: config_dir,
+		Hostss:        serverConfig.Hosts,
+		CheckInterval: 1 * time.Minute,
 	}); err != nil {
 		log.Print(err)
 		return
@@ -133,8 +131,8 @@ func main() {
 
 	// 获得线路列表
 	configDialClients := ConfigDialClients{
-		UpStreams:serverConfig.UpStreams,
-		BasePath:config_dir,
+		UpStreams: serverConfig.UpStreams,
+		BasePath:  config_dir,
 	}
 
 	dialClients, err := NewDialClients(&configDialClients)
@@ -145,9 +143,6 @@ func main() {
 
 	// 创建 tcpping 上层代理
 	upStream := NewTcppingUpStream(dialClients)
-
-
-
 
 	// 服务器监听
 	srv := NewServer(serverConfig.Addr, upStream)
@@ -161,4 +156,3 @@ func main() {
 		return
 	}
 }
-
