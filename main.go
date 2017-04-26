@@ -14,6 +14,7 @@ import (
 	"github.com/BurntSushi/toml"
 	"github.com/gamexg/TcpRoute2/daemon"
 	"github.com/gamexg/TcpRoute2/netchan"
+	 "runtime/debug"
 )
 
 const version = "0.5.10"
@@ -147,6 +148,13 @@ func main() {
 	// 服务器监听
 	srv := NewServer(serverConfig.Addr, upStream)
 
+	go func() {
+		for {
+			time.Sleep(60 * time.Second)
+			debug.FreeOSMemory()
+		}
+	}()
+	
 	// TODO: DNS 配置
 
 	// TODO: 各端口需要的安全级别
