@@ -22,20 +22,16 @@ before_deploy:
   - wget https://github.com/GameXG/TcpRoute2/releases/download/WindowsGuiV0.5.2/TcpRoute2Windows.exe.config
   - GOARCH=arm GOOS=linux   go build -o TcpRoute2-linux-arm
   - GOARCH=386 GOOS=linux   go build -o TcpRoute2-linux-386
-  - GOARCH=386 GOOS=freebsd   go build -o TcpRoute2-freebsd-386
   - GOARCH=386 GOOS=darwin  go build -o TcpRoute2-darwin-386
   - GOARCH=386 GOOS=windows go build -o TcpRoute2-windows-386.exe
   - GOARCH=amd64 GOOS=linux   go build -o TcpRoute2-linux-amd64
-  - GOARCH=amd64 GOOS=freebsd   go build -o TcpRoute2-freebsd-amd64
   - GOARCH=amd64 GOOS=darwin  go build -o TcpRoute2-darwin-amd64
   - GOARCH=amd64 GOOS=windows go build -o TcpRoute2-windows-amd64.exe
   - mv README.md README.txt
   - zip -r TcpRoute2-linux-arm.zip TcpRoute2-linux-arm config.toml.example README.txt
   - zip -r TcpRoute2-linux-386.zip TcpRoute2-linux-386 config.toml.example README.txt
-  - zip -r TcpRoute2-freebsd-386.zip TcpRoute2-freebsd-386 config.toml.example README.txt
   - zip -r TcpRoute2-darwin-386.zip TcpRoute2-darwin-386 config.toml.example README.txt
   - zip -r TcpRoute2-linux-amd64.zip TcpRoute2-linux-amd64 config.toml.example README.txt
-  - zip -r TcpRoute2-freebsd-amd64.zip TcpRoute2-freebsd-amd64 config.toml.example README.txt
   - zip -r TcpRoute2-darwin-amd64.zip TcpRoute2-darwin-amd64 config.toml.example README.txt
   - unix2dos config.toml.example README.txt
   - zip -r TcpRoute2-windows-386.zip TcpRoute2-windows-386.exe config.toml.example README.txt
@@ -53,11 +49,9 @@ deploy:
   file:
     - TcpRoute2-linux-arm.zip
     - TcpRoute2-linux-386.zip
-    - TcpRoute2-freebsd-386.zip
     - TcpRoute2-darwin-386.zip
     - TcpRoute2-windows-386.zip
     - TcpRoute2-linux-amd64.zip
-    - TcpRoute2-freebsd-amd64.zip
     - TcpRoute2-darwin-amd64.zip
     - TcpRoute2-windows-amd64.zip
     - TcpRoute2-windows-gui-386.zip
@@ -65,4 +59,4 @@ deploy:
   on:
     tags: true
     all_branches: true
-    go: 1.8
+    go: 1.7
