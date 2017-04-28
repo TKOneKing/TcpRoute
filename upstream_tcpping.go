@@ -3,7 +3,7 @@ import (
 	"time"
 	"net"
 	"fmt"
-	"./netchan"
+	"github.com/gamexg/TcpRoute2/netchan"
 	"sync"
 	"log"
 )

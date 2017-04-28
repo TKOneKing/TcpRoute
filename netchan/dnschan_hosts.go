@@ -7,8 +7,8 @@ import (
 	"strings"
 	"bufio"
 	"io"
-	"../domains"
-	"../ufile"
+	"github.com/gamexg/TcpRoute2/domains"
+	"github.com/gamexg/TcpRoute2/ufile"
 )
 
 /*

@@ -10,6 +10,7 @@ import (
 
 type dnsServer struct {
 	Credit int //dns服务器信誉，根据信誉不同，查询得到的dns记录信誉也不同。
+	Addr   net.UDPAddr
 }
 
 type ConfigDnsServer struct {
@@ -18,12 +19,12 @@ type ConfigDnsServer struct {
 }
 
 type dnsDns struct {
-	servers map[net.UDPAddr]*dnsServer
+	servers map[string]*dnsServer
 }
 
 func NewDnsDns() *dnsDns {
 	return &dnsDns{
-		servers: make(map[net.UDPAddr]*dnsServer),
+		servers: make(map[string]*dnsServer),
 	}
 }
 
@@ -35,7 +36,7 @@ func (d *dnsDns) query(domain string, RecordChan chan *DnsRecord, ExitChan chan 
 	dnschanDnsQuery(d.servers, domain, RecordChan, ExitChan)
 }
 
-func dnschanDnsQuery(servers map[net.UDPAddr]*dnsServer, domain string, RecordChan chan *DnsRecord, ExitChan chan int) {
+func dnschanDnsQuery(servers map[string]*dnsServer, domain string, RecordChan chan *DnsRecord, ExitChan chan int) {
 	select {
 	case <-ExitChan:
 		return
@@ -66,8 +67,8 @@ func dnschanDnsQuery(servers map[net.UDPAddr]*dnsServer, domain string, RecordCh
 
 	// 另开一个线程发出查询
 	go func() {
-		for k, _ := range servers {
-			if _, err := conn.WriteToUDP(mData, k); err != nil {
+		for k, v := range servers {
+			if _, err := conn.WriteToUDP(mData, &v.Addr); err != nil {
 				log.Printf("向%v发送dns请求失败，%v", k, err)
 			}
 		}
@@ -102,15 +103,15 @@ func dnschanDnsQuery(servers map[net.UDPAddr]*dnsServer, domain string, RecordCh
 			continue
 		}
 
-		v := servers[*addr]
+		v := servers[addr.IP.String()]
 		if v == nil {
 			log.Printf("未知的服务器 %v 回应，忽略。", *addr)
 			continue
 		}
 
 		for _, a := range r.Answer {
-			dnsA, err := a.(*dns.A)
-			if err != nil || dnsA == nil {
+			dnsA, ok := a.(*dns.A)
+			if ok != true || dnsA == nil {
 				log.Printf("内部错误，a=%v,err=%v", dnsA, err)
 			}
 			select {

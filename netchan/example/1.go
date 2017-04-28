@@ -3,7 +3,7 @@ import (
 	"github.com/gamexg/proxyclient"
 	"time"
 	"fmt"
-	"../../../netchan"
+	"github.com/gamexg/TcpRoute2/netchan"
 )
 
 

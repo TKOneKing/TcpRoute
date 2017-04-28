@@ -2,9 +2,9 @@ package main
 import (
 	"github.com/gamexg/proxyclient"
 	"time"
-	"./domains"
+	"github.com/gamexg/TcpRoute2/domains"
 	"sync"
-	"./ufile"
+	"github.com/gamexg/TcpRoute2/ufile"
 	"fmt"
 	"io"
 	"bufio"

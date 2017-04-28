@@ -1,10 +1,11 @@
 package netchan
+
 import (
-	"time"
-	"net"
-	"sync"
 	"fmt"
 	"log"
+	"net"
+	"sync"
+	"time"
 )
 
 var queries []queryer
@@ -17,8 +18,8 @@ type DnsQuery struct {
 	// 返回dns查询结果
 	RecordChan chan *DnsRecord
 	// queries    []queryer
-	exitChan   chan int
-	Domain     string
+	exitChan chan int
+	Domain   string
 }
 
 // 表示 DNS 记录
@@ -46,9 +47,9 @@ func init() {
 	sysDns := systemDNS("")
 	queries = append(queries, &sysDns)
 
-	hDns, err := NewHostsDns(&DnschanHostsConfig{BashPath:"./",
-		Hostss:make([]*DnschanHostsConfigHosts, 0),
-		CheckInterval:1 * time.Second,
+	hDns, err := NewHostsDns(&DnschanHostsConfig{BashPath: "./",
+		Hostss:        make([]*DnschanHostsConfigHosts, 0),
+		CheckInterval: 1 * time.Second,
 	})
 	if err != nil {
 		panic(err)
@@ -57,12 +58,12 @@ func init() {
 	HostsDns = hDns
 
 	/*
-	httpDns, err := NewHttpDns("http://127.0.0.1:5353/httpdns")
-	if err != nil {
-		glog.Warning("httpDNS 错误：%v", err)
-	}else {
-		queries = append(queries, httpDns)
-	}*/
+		httpDns, err := NewHttpDns("http://127.0.0.1:5353/httpdns")
+		if err != nil {
+			glog.Warning("httpDNS 错误：%v", err)
+		}else {
+			queries = append(queries, httpDns)
+		}*/
 
 	go searchBlackIP()
 }
@@ -78,7 +79,7 @@ func searchBlackIP() {
 			recordChan := make(chan *DnsRecord)
 			exitChan := make(chan int)
 
-			wg:=sync.WaitGroup{}
+			wg := sync.WaitGroup{}
 
 			// 探测 DNS 纠错 IP
 			wg.Add(1)
@@ -91,12 +92,15 @@ func searchBlackIP() {
 			}()
 
 			// 探测 DNS 劫持 IP
-			servers:=make(map[net.UDPAddr]*dnsServer)
-			addr,err:=net.ResolveUDPAddr("udp","8.8.6.3:53")
+			servers := make(map[string]*dnsServer)
+			addr, err := net.ResolveUDPAddr("udp", "8.8.6.3:53")
 			if err != nil {
-				panic(fmt.Sprintf("内部错误：%v",err))
+				panic(fmt.Sprintf("内部错误：%v", err))
 			}
-			servers[addr]=&dnsServer{0}
+			servers[addr.IP.String()] = &dnsServer{
+				Credit: 0,
+				Addr:   *addr,
+			}
 
 			wg.Add(1)
 			go func() {
@@ -134,7 +138,7 @@ func searchBlackIP() {
 	}
 }
 
-func (dq*DnsQuery) query() {
+func (dq *DnsQuery) query() {
 	wg := sync.WaitGroup{}
 	for _, q := range queries {
 		q := q
@@ -154,7 +158,7 @@ func (dq*DnsQuery) query() {
 	wg.Wait()
 
 	func() {
-		defer func() { recover()}()
+		defer func() { recover() }()
 		close(dq.RecordChan)
 	}()
 }
@@ -166,21 +170,21 @@ func NewDnsQuery(domain string) *DnsQuery {
 	return &q
 }
 
-func (dq*DnsQuery) Stop() {
+func (dq *DnsQuery) Stop() {
 	func() {
-		defer func() { recover()}()
+		defer func() { recover() }()
 		close(dq.exitChan)
 	}()
 
 	func() {
-		defer func() { recover()}()
+		defer func() { recover() }()
 		close(dq.RecordChan)
 	}()
 }
 
 type systemDNS string
 
-func (s *systemDNS)query(domain string, RecordChan chan *DnsRecord, ExitChan chan int) {
+func (s *systemDNS) query(domain string, RecordChan chan *DnsRecord, ExitChan chan int) {
 	select {
 	case <-ExitChan:
 		return
@@ -218,10 +222,9 @@ func (s *systemDNS)query(domain string, RecordChan chan *DnsRecord, ExitChan cha
 	}()
 
 	func() {
-		defer func() {_ = recover()}()
+		defer func() { _ = recover() }()
 		for _, ipString := range ipsString {
 			RecordChan <- &DnsRecord{ipString, 0}
 		}
 	}()
 }
-

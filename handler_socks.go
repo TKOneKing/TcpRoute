@@ -10,7 +10,7 @@ import (
 	"strconv"
 	"log"
 	"sync/atomic"
-	"./nettool"
+	"github.com/gamexg/TcpRoute2/nettool"
 )
 
 const forwardBufSize = 8192 // 转发缓冲区大小
