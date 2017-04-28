@@ -17,7 +17,7 @@ import (
 	"github.com/gamexg/TcpRoute2/netchan"
 )
 
-const version = "0.5.10"
+const version = "0.5.11"
 
 type ServerConfig struct {
 	Addr          string `default:"127.0.0.1:7070"`
