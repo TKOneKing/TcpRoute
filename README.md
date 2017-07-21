@@ -5,13 +5,13 @@
 
 TcpRoute , TCP 层的路由器。对于 TCP 连接自动从多个线路(允许任意嵌套)、多个域名解析结果中选择最优线路。
 
-TcpRoute 使用激进的选路策略，对 DNS 解析获得的多个IP同时尝试连接，同时使用多个线路(代理)进行连接，最终使用最快建立的连接。支持 TcpRoute 级别 Hosts 文件，支持黑白名单。提供代理、hosts 信誉度功能，只通过不安全的代理转发 https 等加密连接，提高安全性。当配合 redsocks、Proxifier 作为全局代理时可以启动“强制TcpRoute Dns解析”，强制将浏览器本地 DNS 解析改为代理服务器进行DNS解析来更好的优化网络连接，避免 Dns 污染造成的网络故障。
+TcpRoute 使用激进的选路策略，对 DNS 解析获得的多个IP同时尝试连接，同时使用多个线路进行连接，最终使用最快建立的连接。支持 TcpRoute 级别 Hosts 文件，支持黑白名单。提供代理、hosts 信誉度功能，只通过不安全的代理转发 https 等加密连接，提高安全性。当配合 redsocks、Proxifier 作为全局代理时可以启动“强制TcpRoute Dns解析”，强制将浏览器本地 DNS 解析改为代理服务器进行DNS解析来更好的优化网络连接，避免 Dns 污染造成的网络故障。
 
 增加了反运营商 http 劫持功能，有两种方式，简易拆包反劫持及ttl反劫持。
 
 通过 socks5 代理协议对外提供服务。
 
-代理功能拆分成了独立的库，详细代理url格式及选项请参见 [ProxyClient](https://github.com/GameXG/ProxyClient)，目前支持直连、socks4、socks4a、socks5、http、https、ss 代理线路。其中 socks5 支持用户名、密码认证，http、https 支持用户名、密码基本认证。
+代理功能拆分成了独立的库，详细代理url格式及选项请参见 [ProxyClient](https://github.com/GameXG/ProxyClient)，目前支持直连、socks4、socks4a、socks5、http、https 等线路。其中 socks5 支持用户名、密码认证，http、https 支持用户名、密码基本认证。
 
 ## 安装
 
@@ -98,7 +98,7 @@ addr="127.0.0.1:7070"
 # 提供代理的类型、地址、用户认证方式等信息。
 # 默认值为："direct://0.0.0.0:0000"
 #
-# 支持 直连、http、https、socks4、socks4a、socks5 及 ss 协议，其中 http、https、socks5、ss 支持密码认证。
+# 支持 直连、http、https、socks4、socks4a、socks5 等协议，其中 http、https、socks5等支持密码认证。
 # 允许多层嵌套代理。代理部分已经拆分成了独立的库，详细配置信息可以到 https://github.com/GameXG/ProxyClient 参看。
 #
 # 可以通过参数指定一些特殊选项，例如，https 代理是否验证服务器 tls 证书。
@@ -125,7 +125,7 @@ addr="127.0.0.1:7070"
 # socks5 代理 socks5://123.123.123.123:5050
 #     可选功能：用户认证功能。支持无认证、用户名密码认证，格式同 http 代理。
 #
-# ss 代理 ss://method:password@123.123.123:5050
+# 等代理
 #
 # 直连 direct://0.0.0.0:0000
 #     可选参数： LocalAddr=0.0.0.0:0 表示tcp连接绑定的本地ip及端口，默认值 0.0.0.0:0。
@@ -140,7 +140,7 @@ addr="127.0.0.1:7070"
 # 是否执行本地dns解析,只建议直连、socks4 线路设置为 true 。
 # 设置为 true 时将由 TcpRoute 进行本地 DNS 解析，目前主要是同时使用本地操作系统dns解析及 TcpRoute hosts dns解析。
 # 解析获得多个IP时将会同时建立到多个ip的连接，最终使用最快建立连接的ip。
-# 设置为 false 时将由上游代理负责dns解析。建议 http、https、socks4a、socks5、ss代理都设置为 false 。
+# 设置为 false 时将由上游代理负责dns解析。建议 http、https、socks4a、socks5 等代理都设置为 false 。
 # 默认值 false
 #
 #
@@ -165,10 +165,9 @@ addr="127.0.0.1:7070"
 #
 # CorrectDelay=0
 # 修正延迟
-# ss 协议缺陷，ss 协议并不会报告是否连接到了目标网站，所以无法获得真实的建立到到目标网站的耗时。
+# 某协议缺陷，协议并不会报告是否连接到了目标网站，所以无法获得真实的建立到到目标网站的耗时。
 # 无法获得准确的到目标网站的耗时将使得 tcpping 策略无法准确的评估各个线路的速度，所以增加了这个选项用来手工修正。
 # tcpping 策略评估最快建立连接的线路时会以 “建立连接的实际耗时 + CorrectDelay” 进行评估，选出最快建立连接的线路。
-# 非 ss 协议不用设置，ss 协议建议设置为50-100。
 #
 #
 ######
@@ -255,7 +254,7 @@ Credit=0
 Sleep=80
 # Sleep表示使用本线路前等待的时间，单位毫秒。
 CorrectDelay=0
-# CorrectDelay 表示当前线路修正延迟，ss 协议建议设置为 50-100 之间的值，非 ss 协议代理设置为 0。
+# CorrectDelay 表示当前线路修正延迟，某协议建议设置为 50-100 之间的值，非某协议代理设置为 0。
 
 
 ####################
