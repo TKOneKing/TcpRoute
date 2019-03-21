@@ -1,10 +1,7 @@
 language: go
 
 go:
-  - 1.5
-  - 1.6
-  - 1.7
-  - 1.8
+  - 1.12
   - tip
 
 before_install:
@@ -59,4 +56,4 @@ deploy:
   on:
     tags: true
     all_branches: true
-    go: 1.7
+    go: 1.12
