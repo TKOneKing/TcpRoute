@@ -1,7 +1,7 @@
 package ufile
 import (
 	"sync"
-	"github.com/go-fsnotify/fsnotify"
+	"github.com/fsnotify/fsnotify"
 	"time"
 	"path/filepath"
 	"strings"
