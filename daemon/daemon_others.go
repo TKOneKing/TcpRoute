@@ -4,7 +4,7 @@ package Daemon
 
 import (
     "io"
-    "github.com/VividCortex/godaemon"
+    "github.com/gamexg/godaemon"
 )
 
 func MakeDaemon() (io.Reader, io.Reader, error) {

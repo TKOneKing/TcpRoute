@@ -11,6 +11,7 @@ before_install:
   - cd ../..
   - mv GameXG gamexg
   - cd gamexg/TcpRoute2
+  -
 
 script:
     - $HOME/gopath/bin/goveralls -service=travis-ci
