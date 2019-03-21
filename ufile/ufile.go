@@ -339,7 +339,6 @@ func (u*UFile)loop_http() {
 }
 
 func (u*UFile)loop_http_exec() {
-	var checkInterval time.Duration
 	now := time.Now()
 
 	// 临时保存需要更新数据
@@ -349,7 +348,6 @@ func (u*UFile)loop_http_exec() {
 	func() {
 		u.rwm.RLock()
 		defer u.rwm.RUnlock()
-		checkInterval = u.checkInterval
 
 		for _, f := range u.files {
 			if f.Local == false && now.After(f.utime) {
