@@ -8,7 +8,7 @@ import (
 
 
 func TestUpStreamDialClient(t *testing.T) {
-defer os.Remove("Blacklist.txt")
+	defer os.Remove("Blacklist.txt")
 	f1, err := os.Create("Blacklist.txt")
 	if _, err := f1.Write([]byte("   \r\n #000 \r\n   xxx.com ")); err != nil {
 		t.Fatal(err)
