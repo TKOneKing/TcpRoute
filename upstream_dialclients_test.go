@@ -8,14 +8,22 @@ import (
 
 
 func TestUpStreamDialClient(t *testing.T) {
-	f, err := os.Create("Blacklist.txt")
-	if _, err := f.Write([]byte("   \r\n #000 \r\n   xxx.com ")); err != nil {
+defer os.Remove("Blacklist.txt")
+	f1, err := os.Create("Blacklist.txt")
+	if _, err := f1.Write([]byte("   \r\n #000 \r\n   xxx.com ")); err != nil {
 		t.Fatal(err)
 	}
-	defer os.Remove("Blacklist.txt")
+	f1.Close()
 
 
-	f, err = os.Create("Whitelist-config.toml")
+	defer os.Remove("Whitelist.txt")
+	f2, err := os.Create("Whitelist.txt")
+	if _, err := f2.Write([]byte("   \r\n #000 \r\n   163.com ")); err != nil {
+		t.Fatal(err)
+	}
+	f2.Close()
+
+	f, err := os.Create("Whitelist-config.toml")
 	if _, err := f.Write([]byte(`
 BasePath="."
 
@@ -27,7 +35,7 @@ Credit=0
 Sleep=0
 
 [[UpStreams.Whitelist]]
-Path="https://raw.githubusercontent.com/renzhn/MEOW/af19d0d3e22d485254bf50cfce4e5ed12b0e445b/doc/sample-config/direct"
+Path="Whitelist.txt"
 UpdateInterval="24h"
 Type="Suffix"
 
@@ -42,11 +50,6 @@ ProxyUrl="http://123.123.123.123:8088"
 DnsResolve=false
 Credit=0
 Sleep=80
-
-[[UpStreams.Whitelist]]
-Path="https://raw.githubusercontent.com/renzhn/MEOW/af19d0d3e22d485254bf50cfce4e5ed12b0e445b/doc/sample-config/proxy"
-UpdateInterval="24h"
-Type="Suffix"
 
 `)); err != nil {
 		t.Fatal(err)
