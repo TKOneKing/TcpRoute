@@ -1,20 +1,21 @@
 package main
 
 import (
-	"time"
-	"net"
 	"io"
 	"log"
+	"net"
+	"time"
+
 	"github.com/gamexg/TcpRoute2/nettool"
 )
 
 //
 const (
-// 尝试创建处理器时的conn.read 的timeout
-// 实际是一次性读取数据，所以这个超时指的是客户端必须10秒内发出第一和数据
+	// 尝试创建处理器时的conn.read 的timeout
+	// 实际是一次性读取数据，所以这个超时指的是客户端必须10秒内发出第一和数据
 	handlerNewTimeout = 10 * time.Second
 
-// 默认一个连接的总处理时间，一般都会被实际的处理器修改掉。
+	// 默认一个连接的总处理时间，一般都会被实际的处理器修改掉。
 	handlerBaseTimeout = 10 * time.Minute
 )
 
@@ -23,9 +24,9 @@ type SetLingerer interface {
 }
 
 type Server struct {
-	Addr     string          // TCP 监听地址
-	hNewer   HandlerNewer    // 请求处理器
-	upStream UpStreamDial    // 上层代理
+	Addr     string       // TCP 监听地址
+	hNewer   HandlerNewer // 请求处理器
+	upStream UpStreamDial // 上层代理
 	ln       net.Listener
 	errConn  *ErrConnService //错误连接统计
 }
@@ -47,7 +48,6 @@ func NewServer(addr string, upStream UpStreamDial) *Server {
 	}
 	srv.upStream = upStream
 
-
 	// 处理器
 	h := NewSwitchHandlerNewer()
 	hs := NewSocksHandlerNewer(srv.upStream)
@@ -58,7 +58,7 @@ func NewServer(addr string, upStream UpStreamDial) *Server {
 
 }
 
-func (srv *Server) ListAndServe() error {
+func (srv *Server) ListenAndServe() error {
 	if srv.Addr == "" {
 		srv.Addr = ":7070"
 	}
@@ -71,7 +71,6 @@ func (srv *Server) ListAndServe() error {
 
 	return srv.Server()
 }
-
 
 func (srv *Server) Server() error {
 	ln := srv.ln
@@ -109,7 +108,7 @@ func (srv *Server) handlerConn(conn net.Conn) {
 	}()
 	// 是这里调用关闭还是 Handler() 负责？
 	defer conn.Close()
-	nettool.SetLinger(conn,5)
+	nettool.SetLinger(conn, 5)
 
 	conn.SetDeadline(time.Now().Add(handlerNewTimeout))
 
