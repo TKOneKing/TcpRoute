@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/BurntSushi/toml"
+	"github.com/gamexg/TcpRoute2/daemon"
 	"github.com/gamexg/TcpRoute2/netchan"
 )
 
@@ -158,7 +159,7 @@ func main() {
 
 	// TODO: 各端口需要的安全级别
 
-	if err := srv.ListenAndServe(); err != nil {
+	if err := srv.ListAndServe(); err != nil {
 		log.Print(err)
 		return
 	}
